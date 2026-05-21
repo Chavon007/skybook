@@ -21,7 +21,7 @@ function SignUpForm() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.5 }}
           className="relative flex flex-col justify-center items-center h-auto border border-amber-100/30 rounded-2xl w-full max-w-[400px] p-3 mx-auto bg-black/20 backdrop-blur-lg"
         >
           {/* HEADER */}
