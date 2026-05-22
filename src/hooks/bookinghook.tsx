@@ -1,11 +1,16 @@
 "use client";
-import { createBooking, fetchBooking } from "@/services/bookingsupabase";
+import {
+  createBooking,
+  fetchBooking,
+  cancelBooking,
+  rescheduleBooking,
+} from "@/services/bookingsupabase";
 import { useFlightStore } from "@/store/useFlightStore";
-import { Passenger } from "@/types/booking";
+import { Passenger, Bookings } from "@/types/booking";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useUserStore } from "@/store/useUserStore";
-import { Bookings } from "@/types/booking";
+
 function useBooking() {
   const router = useRouter();
   const { session } = useUserStore();
@@ -17,6 +22,7 @@ function useBooking() {
     setPassengerDetails,
     setPnrCode,
   } = useFlightStore();
+
   const [formData, setFormData] = useState<Passenger>({
     id: "",
     booking_id: "",
@@ -26,9 +32,14 @@ function useBooking() {
     dob: "",
     created_at: "",
   });
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [getBookings, setgetBookings] = useState<Bookings[]>([]);
+  const [getBookings, setGetBookings] = useState<Bookings[]>([]);
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [reschedulingId, setReschedulingId] = useState<string | null>(null);
+
+  // create a booking
   const handleBooking = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -51,24 +62,24 @@ function useBooking() {
         seatId: selectedSeat?.id,
         passenger: formData,
       });
-      setPnrCode(data.booking.p_pnr_code);
+      setPnrCode(data.booking.pnr_code);  // ← fixed
       setPassengerDetails(data.passenger);
       router.push("/booking/confirmed");
-    } catch (err) {
-      setError("Can't book now");
+    } catch (err: any) {
+      setError(err.message || "Can't book now");
     } finally {
       setLoading(false);
     }
   };
 
+  // fetch all bookings for logged in user
   useEffect(() => {
     if (!session?.user.id) return;
     const handleFetchBookings = async () => {
       setLoading(true);
-
       try {
         const data = await fetchBooking(session.user.id);
-        setgetBookings(data);
+        setGetBookings(data);
       } catch (err: any) {
         setError(err.message || "Failed to get bookings");
       } finally {
@@ -76,15 +87,66 @@ function useBooking() {
       }
     };
     handleFetchBookings();
-  }, []);
+  }, [session]);
+
+  // cancel a booking
+  const handleCancel = async (bookingId: string) => {
+    setCancellingId(bookingId);
+    setError("");
+    try {
+      await cancelBooking(bookingId);
+      setGetBookings((prev) =>
+        prev.map((b) =>
+          b.id === bookingId ? { ...b, status: "cancelled" } : b
+        )
+      );
+    } catch (err: any) {
+      setError(err.message || "Failed to cancel booking");
+    } finally {
+      setCancellingId(null);
+    }
+  };
+
+  // reschedule a booking
+  const handleReschedule = async ({
+    bookingId,
+    newFlightId,
+    feeCharged,
+  }: {
+    bookingId: string;
+    newFlightId: string;
+    feeCharged: number;
+  }) => {
+    setReschedulingId(bookingId);
+    setError("");
+    try {
+      await rescheduleBooking({ bookingId, newFlightId, feeCharged });
+      setGetBookings((prev) =>
+        prev.map((b) =>
+          b.id === bookingId
+            ? { ...b, status: "rescheduled", flight_id: newFlightId }
+            : b
+        )
+      );
+    } catch (err: any) {
+      setError(err.message || "Failed to reschedule booking");
+    } finally {
+      setReschedulingId(null);
+    }
+  };
+
   return {
     formData,
-    getBookings,
     setFormData,
     loading,
     error,
     handleBooking,
     passengersDetails,
+    getBookings,
+    cancellingId,
+    reschedulingId,
+    handleCancel,
+    handleReschedule,
   };
 }
 

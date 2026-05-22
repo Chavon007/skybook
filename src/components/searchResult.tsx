@@ -24,12 +24,8 @@ function FlightResult() {
   };
 
   return (
-    <div
-      className="relative min-h-screen bg-center bg-cover"
-      style={{ backgroundImage: "url(/bg1.jpg)" }}
-    >
+    <div className=" min-h-screen ">
       {/* overlay */}
-      <div className="absolute inset-0 bg-black/60" />
 
       <div className="relative z-10 max-w-3xl mx-auto p-4 md:p-8">
         {/* NAVBAR */}
@@ -174,7 +170,6 @@ function FlightResult() {
                 {/* DIVIDER */}
                 <div className="hidden md:block w-px h-16 bg-amber-100/10" />
 
-               
                 <div className="flex md:flex-col items-center md:items-end justify-between md:justify-center gap-3 md:min-w-[120px]">
                   <div className="text-right">
                     <h3 className="text-base font-semibold font-mono text-amber-100">

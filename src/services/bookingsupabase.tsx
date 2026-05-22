@@ -37,7 +37,7 @@ export const createBooking = async ({
       p_user_id: user.id,
       p_total_price: 0,
       p_pnr_code: generatePNR(),
-    },
+    }
   );
 
   if (bookingError) throw bookingError;
@@ -73,11 +73,95 @@ export const fetchBooking = async (userId: string) => {
         aircraft_type,
         flight_no
       )
-    `,
+    `
     )
-    .eq("user_id", userId);
+    .eq("user_id", userId)
+    .order("booked_at", { ascending: false });
 
   if (error) throw error;
+
+  return data;
+};
+
+export const fetchBookingById = async (bookingId: string) => {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select(
+      `
+      *,
+      flights (
+        origin,
+        destination,
+        departs_at,
+        arrives_at,
+        aircraft_type,
+        flight_no
+      )
+    `
+    )
+    .eq("id", bookingId)
+    .single();
+
+  if (error) throw error;
+
+  return data;
+};
+
+export const cancelBooking = async (bookingId: string) => {
+  const { data, error } = await supabase
+    .from("bookings")
+    .update({ status: "cancelled" })
+    .eq("id", bookingId)
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  return data;
+};
+
+export const rescheduleBooking = async ({
+  bookingId,
+  newFlightId,
+  feeCharged,
+}: {
+  bookingId: string;
+  newFlightId: string;
+  feeCharged: number;
+}) => {
+  // get current booking to get old flight id
+  const { data: currentBooking, error: fetchError } = await supabase
+    .from("bookings")
+    .select("flight_id")
+    .eq("id", bookingId)
+    .single();
+
+  if (fetchError) throw fetchError;
+
+  // insert into reschedules table
+  const { error: rescheduleError } = await supabase
+    .from("reschedules")
+    .insert({
+      booking_id: bookingId,
+      old_flight_id: currentBooking.flight_id,
+      new_flight_id: newFlightId,
+      fee_charged: feeCharged,
+    });
+
+  if (rescheduleError) throw rescheduleError;
+
+  // update booking with new flight
+  const { data, error: updateError } = await supabase
+    .from("bookings")
+    .update({
+      flight_id: newFlightId,
+      status: "rescheduled",
+    })
+    .eq("id", bookingId)
+    .select()
+    .single();
+
+  if (updateError) throw updateError;
 
   return data;
 };

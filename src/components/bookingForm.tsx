@@ -15,14 +15,8 @@ function BookingDetails() {
     (selectedFlight?.base_price ?? 0) + (selectedSeat?.extra_fee ?? 0);
 
   return (
-    <div
-      className="relative min-h-screen bg-center bg-cover"
-      style={{ backgroundImage: "url(/bg1.jpg)" }}
-    >
-      <div className="absolute inset-0 bg-black/65" />
-
+    <div className=" min-h-screen">
       <div className="relative z-10 max-w-5xl mx-auto p-4 md:p-8">
-
         {/* TOP NAV */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -58,8 +52,8 @@ function BookingDetails() {
                   index === 2
                     ? "bg-amber-100 text-black font-semibold"
                     : index < 2
-                    ? "bg-amber-100/20 text-amber-100/60 line-through"
-                    : "bg-amber-100/5 text-amber-100/30 border border-amber-100/10"
+                      ? "bg-amber-100/20 text-amber-100/60 line-through"
+                      : "bg-amber-100/5 text-amber-100/30 border border-amber-100/10"
                 }`}
               >
                 {step}
@@ -73,7 +67,6 @@ function BookingDetails() {
 
         {/* MAIN LAYOUT */}
         <div className="flex flex-col lg:flex-row gap-6">
-
           {/* LEFT — PASSENGER FORM */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -235,7 +228,7 @@ function BookingDetails() {
                           {
                             dateStyle: "medium",
                             timeStyle: "short",
-                          }
+                          },
                         )}
                       </span>
                     </div>

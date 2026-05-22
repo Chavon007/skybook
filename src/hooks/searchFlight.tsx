@@ -1,19 +1,17 @@
 "use client";
 import { searchFlight } from "@/services/flightsupabse";
 import { useFlightStore } from "@/store/useFlightStore";
-import { SearchQuery, Flight } from "@/types/flight";
+import { Flight } from "@/types/flight";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 function useSearch() {
   const {
     searchQuery,
     flights,
-    selectedFlight,
+
     setFlights,
     setSearchQuery,
     setSelectedFlight,
-    clearFlights,
-    resetStore,
   } = useFlightStore();
   const [loading, setLoading] = useState(false);
 

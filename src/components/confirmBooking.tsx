@@ -12,10 +12,10 @@ function ConfirmedBooking() {
 
   return (
     <div
-      className="relative min-h-screen bg-center bg-cover"
-      style={{ backgroundImage: "url(/bg1.jpg)" }}
+      className="relative min-h-screen "
+     
     >
-      <div className="absolute inset-0 bg-black/65" />
+      
 
       <div className="relative z-10 max-w-4xl mx-auto p-4 md:p-8 flex flex-col items-center justify-center min-h-screen">
         {/* HEADER */}

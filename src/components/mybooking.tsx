@@ -4,6 +4,7 @@ import useBooking from "@/hooks/bookinghook";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { MdFlightTakeoff } from "react-icons/md";
 
 const filterOption = [
   { title: "All" },
@@ -64,9 +65,31 @@ function MyBookings() {
         {loading ? (
           <p className="text-amber-100/60 font-mono">Loading bookings...</p>
         ) : filteredBookings.length === 0 ? (
-          <p className="text-amber-100/60 font-mono">
-            Sorry, you have no bookings yet
-          </p>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center justify-center gap-4 mt-24 text-center"
+          >
+            <div className="w-20 h-20 rounded-full bg-amber-100/5 border border-amber-100/10 flex items-center justify-center">
+              <MdFlightTakeoff className="text-4xl text-amber-100/30" />
+            </div>
+            <div>
+              <p className="text-amber-100 font-serif text-lg font-bold mb-1">
+                No bookings yet
+              </p>
+              <p className="text-amber-100/40 font-mono text-xs">
+                You have not made any{" "}
+                {activeFilter !== "All" ? activeFilter.toLowerCase() : ""}{" "}
+                bookings yet
+              </p>
+            </div>
+            <button
+              onClick={() => router.push("/flight")}
+              className="px-5 py-2.5 rounded-xl bg-amber-100 text-black font-serif font-semibold text-sm hover:bg-amber-300 transition cursor-pointer"
+            >
+              Search flights →
+            </button>
+          </motion.div>
         ) : (
           <div className="space-y-4">
             {filteredBookings.map((book, index) => (
@@ -127,17 +150,19 @@ function MyBookings() {
                   </div>
                 </div>
 
-                {/* ACTIONS (LEFT ALIGN, NOT CENTERED) */}
+                {/* ACTIONS */}
                 <div className="flex gap-3 mt-5 justify-start">
                   <button
-                    onClick={() => router.push("/booking/reschedule")}
+                    onClick={() =>
+                      router.push(`/booking/reschedule/${book.id}`)
+                    }
                     className="px-4 py-2 text-xs font-mono rounded-xl bg-amber-100 text-black hover:bg-amber-300 transition"
                   >
                     Reschedule
                   </button>
 
                   <button
-                    onClick={() => router.push("/booking/cancelled")}
+                    onClick={() => router.push(`/booking/cancelled/${book.id}`)}
                     className="px-4 py-2 text-xs font-mono rounded-xl border border-red-400/40 text-red-300 hover:bg-red-500/10 transition"
                   >
                     Cancel

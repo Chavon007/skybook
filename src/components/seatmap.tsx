@@ -55,14 +55,10 @@ function SeatMap() {
   );
 
   return (
-    <div
-      className="relative min-h-screen bg-center bg-cover"
-      style={{ backgroundImage: "url(/bg1.jpg)" }}
-    >
-      <div className="absolute inset-0 bg-black/65" />
+    <div className="relative min-h-screen">
+      
 
       <div className="relative z-10 max-w-6xl mx-auto p-4 md:p-8">
-
         {/* TOP NAV */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -117,7 +113,6 @@ function SeatMap() {
 
         {/* MAIN LAYOUT — SEAT MAP LEFT, PANEL RIGHT */}
         <div className="flex flex-col lg:flex-row gap-6">
-
           {/* LEFT — SEAT MAP */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -133,7 +128,6 @@ function SeatMap() {
               </div>
             ) : (
               <div className="flex flex-col gap-6">
-
                 {/* PLANE NOSE */}
                 <div className="flex justify-center">
                   <div className="flex flex-col items-center gap-1">
@@ -270,8 +264,7 @@ function SeatMap() {
                           <span className="text-sm text-amber-100 font-serif font-bold">
                             ₦
                             {(
-                              selectedFlight.base_price +
-                              selectedSeat.extra_fee
+                              selectedFlight.base_price + selectedSeat.extra_fee
                             ).toLocaleString()}
                           </span>
                         </div>
