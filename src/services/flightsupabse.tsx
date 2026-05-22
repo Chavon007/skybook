@@ -1,6 +1,6 @@
 "use client"
 import { createClient } from "@/utliz/supabaseClient";
-import { Flight, SearchQuery } from "@/types/flight";
+import { SearchQuery } from "@/types/flight";
 
 const supabase = createClient();
 
@@ -19,3 +19,5 @@ export const searchFlight = async (query: SearchQuery) => {
 
   return data;
 };
+
+

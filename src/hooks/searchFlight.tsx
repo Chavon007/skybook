@@ -1,7 +1,7 @@
 "use client";
 import { searchFlight } from "@/services/flightsupabse";
 import { useFlightStore } from "@/store/useFlightStore";
-import { SearchQuery } from "@/types/flight";
+import { SearchQuery, Flight } from "@/types/flight";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 function useSearch() {
@@ -47,7 +47,20 @@ function useSearch() {
       setLoading(false);
     }
   };
-  return { handleSearchFlight, loading, error, setSearchQuery, searchQuery };
+
+  const handleFetchAvailableFlight = async (flight: Flight) => {
+    setSelectedFlight(flight);
+    router.push("/booking/seat");
+  };
+  return {
+    handleSearchFlight,
+    loading,
+    error,
+    setSearchQuery,
+    searchQuery,
+    handleFetchAvailableFlight,
+    flights,
+  };
 }
 
 export default useSearch;
