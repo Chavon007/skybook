@@ -8,7 +8,7 @@ import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 function ConfirmedBooking() {
   const router = useRouter();
   const { selectedSeat } = useSeat();
-  const { selectedFlight, passengersDetails } = useFlightStore();
+  const { selectedFlight, passengersDetails, pnrCode } = useFlightStore();
 
   return (
     <div
@@ -50,7 +50,7 @@ function ConfirmedBooking() {
           </small>
 
           <h3 className="text-3xl font-serif font-bold text-amber-100 tracking-widest mt-1">
-            {}
+            {pnrCode ?? "-"}
           </h3>
 
           <p className="text-xs font-mono text-amber-100/40 mt-2">

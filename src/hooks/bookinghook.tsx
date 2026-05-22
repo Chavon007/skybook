@@ -1,17 +1,21 @@
 "use client";
-import { createBooking } from "@/services/bookingsupabase";
+import { createBooking, fetchBooking } from "@/services/bookingsupabase";
 import { useFlightStore } from "@/store/useFlightStore";
 import { Passenger } from "@/types/booking";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import { useUserStore } from "@/store/useUserStore";
+import { Bookings } from "@/types/booking";
 function useBooking() {
   const router = useRouter();
+  const { session } = useUserStore();
+
   const {
     selectedFlight,
     selectedSeat,
     passengersDetails,
     setPassengerDetails,
+    setPnrCode,
   } = useFlightStore();
   const [formData, setFormData] = useState<Passenger>({
     id: "",
@@ -24,7 +28,7 @@ function useBooking() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+  const [getBookings, setgetBookings] = useState<Bookings[]>([]);
   const handleBooking = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -47,6 +51,7 @@ function useBooking() {
         seatId: selectedSeat?.id,
         passenger: formData,
       });
+      setPnrCode(data.booking.p_pnr_code);
       setPassengerDetails(data.passenger);
       router.push("/booking/confirmed");
     } catch (err) {
@@ -55,8 +60,26 @@ function useBooking() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!session?.user.id) return;
+    const handleFetchBookings = async () => {
+      setLoading(true);
+
+      try {
+        const data = await fetchBooking(session.user.id);
+        setgetBookings(data);
+      } catch (err: any) {
+        setError(err.message || "Failed to get bookings");
+      } finally {
+        setLoading(false);
+      }
+    };
+    handleFetchBookings();
+  }, []);
   return {
     formData,
+    getBookings,
     setFormData,
     loading,
     error,

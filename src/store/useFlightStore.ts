@@ -8,6 +8,8 @@ type FlightStore = {
   searchQuery: SearchQuery;
   flights: Flight[];
   seats: Seat[];
+  pnrCode: string | null;
+  setPnrCode: (pnr: string) => void;
   passengersDetails: Passenger | null;
   setPassengerDetails: (passengers: Passenger) => void;
   selectedFlight: Flight | null;
@@ -35,10 +37,12 @@ export const useFlightStore = create<FlightStore>()(
       searchQuery: defaultSearchQuery,
       flights: [],
       seats: [],
+      pnrCode: null,
       passengersDetails: null,
       selectedFlight: null,
       selectedSeat: null,
 
+      setPnrCode: (pnr) => set({ pnrCode: pnr }),
       setPassengerDetails: (passengers) =>
         set({ passengersDetails: passengers }),
       setSearchQuery: (query) => set({ searchQuery: query }),
@@ -55,13 +59,13 @@ export const useFlightStore = create<FlightStore>()(
           selectedFlight: null,
           selectedSeat: null,
           passengersDetails: null,
+          pnrCode: null,
         }),
     }),
     {
       name: "flight-store",
       partialize: (state) => ({
         searchQuery: state.searchQuery,
-       
       }),
     },
   ),

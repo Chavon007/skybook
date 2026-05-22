@@ -33,7 +33,7 @@ export const createBooking = async ({
     "reserve_seat",
     {
       p_seat_id: seatId,
-      p_flight_id: seatId,
+      p_flight_id: flightId,
       p_user_id: user.id,
       p_total_price: 0,
       p_pnr_code: generatePNR(),
@@ -57,4 +57,27 @@ export const createBooking = async ({
   if (passengerError) throw passengerError;
 
   return { booking, passenger: passengerData };
+};
+
+export const fetchBooking = async (userId: string) => {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select(
+      `
+      *,
+      flights (
+        origin,
+        destination,
+        departs_at,
+        arrives_at,
+        aircraft_type,
+        flight_no
+      )
+    `,
+    )
+    .eq("user_id", userId);
+
+  if (error) throw error;
+
+  return data;
 };
