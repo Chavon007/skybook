@@ -50,6 +50,6 @@ export default function Home() {
       </motion.div>
     </div>
 
-    // <div>home</div>
+   
   );
 }
