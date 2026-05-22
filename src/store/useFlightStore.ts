@@ -2,11 +2,14 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { Flight, SearchQuery } from "../types/flight";
 import { Seat } from "@/types/seat";
+import { Passenger } from "@/types/booking";
 
 type FlightStore = {
   searchQuery: SearchQuery;
   flights: Flight[];
   seats: Seat[];
+  passengersDetails: Passenger | null;
+  setPassengerDetails: (passengers: Passenger) => void;
   selectedFlight: Flight | null;
   setSearchQuery: (query: SearchQuery) => void;
   setFlights: (flights: Flight[]) => void;
@@ -32,9 +35,12 @@ export const useFlightStore = create<FlightStore>()(
       searchQuery: defaultSearchQuery,
       flights: [],
       seats: [],
+      passengersDetails: null,
       selectedFlight: null,
       selectedSeat: null,
 
+      setPassengerDetails: (passengers) =>
+        set({ passengersDetails: passengers }),
       setSearchQuery: (query) => set({ searchQuery: query }),
       setFlights: (flights) => set({ flights }),
       setSelectedFlight: (flight) => set({ selectedFlight: flight }),
@@ -48,12 +54,14 @@ export const useFlightStore = create<FlightStore>()(
           flights: [],
           selectedFlight: null,
           selectedSeat: null,
+          passengersDetails: null,
         }),
     }),
     {
       name: "flight-store",
       partialize: (state) => ({
         searchQuery: state.searchQuery,
+       
       }),
     },
   ),
