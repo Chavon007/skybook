@@ -97,7 +97,7 @@ function useBooking() {
       await cancelBooking(bookingId);
       setGetBookings((prev) =>
         prev.map((b) =>
-          b.id === bookingId ? { ...b, status: "cancelled" } : b
+          b.id === bookingId ? { ...b, status: "Cancelled" } : b
         )
       );
     } catch (err: any) {
@@ -124,7 +124,7 @@ function useBooking() {
       setGetBookings((prev) =>
         prev.map((b) =>
           b.id === bookingId
-            ? { ...b, status: "rescheduled", flight_id: newFlightId }
+            ? { ...b, status: "Rescheduled", flight_id: newFlightId }
             : b
         )
       );
