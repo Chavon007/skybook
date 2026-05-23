@@ -21,12 +21,14 @@ function MyBookings() {
   const filteredBookings =
     activeFilter === "All"
       ? getBookings
-      : getBookings.filter((b) => b.status === activeFilter);
+      : getBookings.filter(
+          (b) => b.status.toLowerCase() === activeFilter.toLowerCase(),
+        );
 
   return (
     <div className=" min-h-screen ">
       <div className="relative z-10 p-6 md:p-10">
-        {/* HEADER (LEFT ALIGNED) */}
+        {/* HEADER */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -40,7 +42,7 @@ function MyBookings() {
           </p>
         </motion.div>
 
-        {/* FILTERS (LEFT ALIGNED ROW) */}
+        {/* FILTERS  */}
         <div className="flex flex-wrap gap-2 mb-8">
           {filterOption.map((f) => {
             const isActive = activeFilter === f.title;
@@ -108,7 +110,10 @@ function MyBookings() {
                     </h3>
 
                     <p className="text-xs text-amber-100/50 font-mono mt-1">
-                      Booked: {book.booked_at}
+                      Booked:{" "}
+                      {new Date(book.booked_at).toLocaleDateString("en-NG", {
+                        dateStyle: "medium",
+                      })}
                     </p>
                   </div>
 
@@ -134,18 +139,39 @@ function MyBookings() {
 
                   <div>
                     <p className="text-amber-100/40">Seat</p>
-                    <p>{book.seat_id}</p>
+                    <p>{book.seats?.seat_number ?? "—"}</p>
                   </div>
 
                   <div>
                     <p className="text-amber-100/40">Flight</p>
-                    <p>{book.flight_id}</p>
+                    <p>{book.flights?.flight_no ?? "—"}</p>
                   </div>
 
                   <div>
                     <p className="text-amber-100/40">Time</p>
                     <p>
-                      {book.flights.departs_at} → {book.flights.arrives_at}
+                      {new Date(book.flights?.departs_at).toLocaleTimeString(
+                        "en-NG",
+                        {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        },
+                      )}
+                      {" → "}
+                      {new Date(book.flights?.arrives_at).toLocaleTimeString(
+                        "en-NG",
+                        {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        },
+                      )}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-amber-100/40">Total paid</p>
+                    <p className="text-amber-100 font-semibold">
+                      ₦{book.total_price?.toLocaleString() ?? "—"}
                     </p>
                   </div>
                 </div>

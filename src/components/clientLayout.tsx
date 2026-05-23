@@ -1,9 +1,8 @@
 "use client";
 import Header from "@/components/header";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useUserStore } from "@/store/useUserStore";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const noHeaderRoutes = ["/", "/login", "/signup"];
 const protectedRoutes = ["/flight", "/booking", "/result"];
@@ -17,16 +16,22 @@ export default function ClientLayout({
   const showHeader = !noHeaderRoutes.includes(pathname);
   const { session } = useUserStore();
   const router = useRouter();
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    setHydrated(true);
+  }, []);
+  useEffect(() => {
+    if (!hydrated) return;
     const isProtected = protectedRoutes.some((route) =>
-      pathname.startsWith(route)
+      pathname.startsWith(route),
     );
     if (isProtected && !session) {
       router.push("/login");
     }
-  }, [pathname, session, router]);
+  }, [pathname, session, router, hydrated]);
 
+  if (!hydrated) return null;
   if (!showHeader) return <>{children}</>;
 
   return (

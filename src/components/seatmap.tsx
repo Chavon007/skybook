@@ -31,7 +31,7 @@ function SeatMap() {
   const economy = seats.filter((s) => s.class === "economy");
 
   const getSeatStyle = (seat: Seat) => {
-    if (selectedSeat?.id === seat.id)
+    if (selectedSeat.find((s) => s.id === seat.id))
       return "bg-amber-400/40 border-amber-400 text-amber-100 scale-110 shadow-lg shadow-amber-400/20";
     if (!seat.is_available)
       return "bg-red-900/40 border-red-500/30 text-red-300 cursor-not-allowed opacity-50";
@@ -56,22 +56,14 @@ function SeatMap() {
 
   return (
     <div className="relative min-h-screen">
-      
-
       <div className="relative z-10 max-w-6xl mx-auto p-4 md:p-8">
         {/* TOP NAV */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="flex items-center justify-between mb-8"
+          className=" mb-8"
         >
-          <div className="flex items-center gap-3">
-            <MdFlightTakeoff className="text-amber-100 text-2xl" />
-            <span className="text-amber-100 font-serif font-bold text-xl">
-              SkyBook
-            </span>
-          </div>
           <button
             onClick={() => router.back()}
             className="flex items-center gap-1 text-amber-100 border border-amber-100/30 rounded-lg px-3 py-1.5 text-sm font-mono hover:bg-amber-100/10 transition"
@@ -184,7 +176,7 @@ function SeatMap() {
               </h3>
 
               <AnimatePresence mode="wait">
-                {selectedSeat ? (
+                {selectedSeat.length > 0 ? (
                   <motion.div
                     key="selected"
                     initial={{ opacity: 0, y: 10 }}
@@ -193,78 +185,99 @@ function SeatMap() {
                     transition={{ duration: 0.2 }}
                     className="flex flex-col gap-4"
                   >
-                    {/* BIG SEAT NUMBER */}
-                    <div className="flex items-center justify-center">
-                      <div className="w-20 h-20 rounded-2xl bg-amber-400/20 border-2 border-amber-400 flex items-center justify-center">
-                        <span className="text-3xl font-bold font-serif text-amber-100">
-                          {selectedSeat.seat_number}
-                        </span>
-                      </div>
+                    {/* SELECTED SEATS */}
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      {selectedSeat.map((seat) => (
+                        <div
+                          key={seat.id}
+                          className="w-16 h-16 rounded-xl bg-amber-400/20 border-2 border-amber-400 flex items-center justify-center"
+                        >
+                          <span className="text-lg font-bold text-amber-100">
+                            {seat.seat_number}
+                          </span>
+                        </div>
+                      ))}
                     </div>
 
-                    {/* DETAILS */}
-                    <div className="flex flex-col gap-2">
-                      <div className="flex justify-between items-center border-b border-amber-100/10 pb-2">
-                        <span className="text-xs text-amber-100/50 font-mono">
-                          Class
-                        </span>
-                        <span className="text-sm text-amber-100 font-serif capitalize font-semibold">
-                          {selectedSeat.class}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center border-b border-amber-100/10 pb-2">
-                        <span className="text-xs text-amber-100/50 font-mono">
-                          Seat No.
-                        </span>
-                        <span className="text-sm text-amber-100 font-serif font-semibold">
-                          {selectedSeat.seat_number}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center border-b border-amber-100/10 pb-2">
-                        <span className="text-xs text-amber-100/50 font-mono">
-                          Extra fee
-                        </span>
-                        <span className="text-sm text-amber-100 font-serif font-semibold">
-                          +₦{selectedSeat.extra_fee.toLocaleString()}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-xs text-amber-100/50 font-mono">
-                          Status
-                        </span>
-                        <span className="text-xs bg-green-900/40 text-green-300 border border-green-500/20 px-2 py-0.5 rounded-full font-mono">
-                          Available
-                        </span>
-                      </div>
+                    {/* SEAT DETAILS */}
+                    <div className="flex flex-col gap-3">
+                      {selectedSeat.map((seat) => (
+                        <div
+                          key={seat.id}
+                          className="border border-amber-100/10 rounded-xl p-3 bg-amber-100/5"
+                        >
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-xs text-amber-100/50 font-mono">
+                              Seat
+                            </span>
+
+                            <span className="text-sm text-amber-100 font-semibold">
+                              {seat.seat_number}
+                            </span>
+                          </div>
+
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-xs text-amber-100/50 font-mono">
+                              Class
+                            </span>
+
+                            <span className="text-sm text-amber-100 capitalize">
+                              {seat.class}
+                            </span>
+                          </div>
+
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-amber-100/50 font-mono">
+                              Extra fee
+                            </span>
+
+                            <span className="text-sm text-amber-100">
+                              ₦{seat.extra_fee.toLocaleString()}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
                     </div>
 
-                    {/* FLIGHT TOTAL */}
+                    {/* TOTAL */}
                     {selectedFlight && (
-                      <div className="bg-amber-100/5 border border-amber-100/10 rounded-xl p-3 mt-2">
-                        <div className="flex justify-between items-center mb-1">
+                      <div className="bg-amber-100/5 border border-amber-100/10 rounded-xl p-3">
+                        <div className="flex justify-between items-center mb-2">
                           <span className="text-xs text-amber-100/50 font-mono">
                             Base fare
                           </span>
-                          <span className="text-xs text-amber-100 font-mono">
+
+                          <span className="text-xs text-amber-100">
                             ₦{selectedFlight.base_price.toLocaleString()}
                           </span>
                         </div>
+
                         <div className="flex justify-between items-center mb-2">
                           <span className="text-xs text-amber-100/50 font-mono">
-                            Seat upgrade
+                            Seat fees
                           </span>
-                          <span className="text-xs text-amber-100 font-mono">
-                            +₦{selectedSeat.extra_fee.toLocaleString()}
+
+                          <span className="text-xs text-amber-100">
+                            ₦
+                            {selectedSeat
+                              .reduce((acc, seat) => acc + seat.extra_fee, 0)
+                              .toLocaleString()}
                           </span>
                         </div>
+
                         <div className="border-t border-amber-100/10 pt-2 flex justify-between items-center">
-                          <span className="text-xs text-amber-100/70 font-mono font-semibold">
-                            Subtotal
+                          <span className="text-xs text-amber-100/70 font-semibold">
+                            Total
                           </span>
-                          <span className="text-sm text-amber-100 font-serif font-bold">
+
+                          <span className="text-sm text-amber-100 font-bold">
                             ₦
                             {(
-                              selectedFlight.base_price + selectedSeat.extra_fee
+                              selectedFlight.base_price +
+                              selectedSeat.reduce(
+                                (acc, seat) => acc + seat.extra_fee,
+                                0,
+                              )
                             ).toLocaleString()}
                           </span>
                         </div>
@@ -282,6 +295,7 @@ function SeatMap() {
                     <div className="w-16 h-16 rounded-2xl bg-amber-100/5 border border-amber-100/10 flex items-center justify-center">
                       <span className="text-2xl">💺</span>
                     </div>
+
                     <p className="text-amber-100/40 font-mono text-xs">
                       Click a seat on the map to see details
                     </p>
@@ -293,14 +307,16 @@ function SeatMap() {
             {/* CONTINUE BUTTON */}
             <button
               onClick={handleContinue}
-              disabled={!selectedSeat}
+              disabled={selectedSeat.length === 0}
               className={`w-full py-3 rounded-xl font-serif font-semibold text-sm transition cursor-pointer ${
-                selectedSeat
+                selectedSeat.length > 0
                   ? "bg-amber-100 text-black hover:bg-amber-300"
                   : "bg-amber-100/10 text-amber-100/30 cursor-not-allowed border border-amber-100/10"
               }`}
             >
-              {selectedSeat ? "Continue →" : "Select a seat to continue"}
+              {selectedSeat.length > 0
+                ? "Continue →"
+                : "Select a seat to continue"}
             </button>
 
             {error && (

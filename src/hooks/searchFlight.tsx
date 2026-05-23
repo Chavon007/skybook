@@ -9,6 +9,7 @@ function useSearch() {
     searchQuery,
     flights,
 
+    setSelectedSeat,
     setFlights,
     setSearchQuery,
     setSelectedFlight,
@@ -48,6 +49,7 @@ function useSearch() {
 
   const handleFetchAvailableFlight = async (flight: Flight) => {
     setSelectedFlight(flight);
+    setSelectedSeat([]);
     router.push("/booking/seat");
   };
   return {

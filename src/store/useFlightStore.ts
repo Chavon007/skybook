@@ -9,18 +9,19 @@ type FlightStore = {
   flights: Flight[];
   seats: Seat[];
   pnrCode: string | null;
-  setPnrCode: (pnr: string) => void;
   passengersDetails: Passenger | null;
-  setPassengerDetails: (passengers: Passenger) => void;
   selectedFlight: Flight | null;
+  selectedSeat: Seat[];
+
+  setPnrCode: (pnr: string) => void;
+  setPassengerDetails: (passengers: Passenger) => void;
   setSearchQuery: (query: SearchQuery) => void;
   setFlights: (flights: Flight[]) => void;
   setSelectedFlight: (flight: Flight | null) => void;
+  setSeat: (seats: Seat[]) => void;
+  setSelectedSeat: (seats: Seat[]) => void;
   clearFlights: () => void;
   resetStore: () => void;
-  selectedSeat: Seat | null;
-  setSeat: (seats: Seat[]) => void;
-  setSelectedSeat: (seats: Seat | null) => void;
 };
 
 const defaultSearchQuery: SearchQuery = {
@@ -40,7 +41,7 @@ export const useFlightStore = create<FlightStore>()(
       pnrCode: null,
       passengersDetails: null,
       selectedFlight: null,
-      selectedSeat: null,
+      selectedSeat: [],
 
       setPnrCode: (pnr) => set({ pnrCode: pnr }),
       setPassengerDetails: (passengers) =>
@@ -48,8 +49,8 @@ export const useFlightStore = create<FlightStore>()(
       setSearchQuery: (query) => set({ searchQuery: query }),
       setFlights: (flights) => set({ flights }),
       setSelectedFlight: (flight) => set({ selectedFlight: flight }),
-      setSelectedSeat: (seat) => set({ selectedSeat: seat }),
       setSeat: (seats) => set({ seats }),
+      setSelectedSeat: (seats) => set({ selectedSeat: seats }),
       clearFlights: () => set({ flights: [] }),
       resetStore: () =>
         set({
@@ -57,7 +58,7 @@ export const useFlightStore = create<FlightStore>()(
           seats: [],
           flights: [],
           selectedFlight: null,
-          selectedSeat: null,
+          selectedSeat: [],
           passengersDetails: null,
           pnrCode: null,
         }),
@@ -66,6 +67,10 @@ export const useFlightStore = create<FlightStore>()(
       name: "flight-store",
       partialize: (state) => ({
         searchQuery: state.searchQuery,
+        selectedFlight: state.selectedFlight,
+        selectedSeat: state.selectedSeat,
+        pnrCode: state.pnrCode,
+        passengersDetails: state.passengersDetails,
       }),
     },
   ),

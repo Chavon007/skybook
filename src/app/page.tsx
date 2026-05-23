@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { MdFlightTakeoff } from "react-icons/md";
 import { useRouter } from "next/navigation";
 
-export default function Home() {
+function Home() {
   const router = useRouter();
 
   useEffect(() => {
@@ -49,7 +49,6 @@ export default function Home() {
         </p>
       </motion.div>
     </div>
-
-   
   );
 }
+export default Home;
