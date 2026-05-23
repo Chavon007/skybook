@@ -8,7 +8,7 @@ const popular = [
     price: 45000,
   },
   {
-    to: "LOS → PHC",
+    to: "LOS → ENG",
     price: 38000,
   },
 ];
