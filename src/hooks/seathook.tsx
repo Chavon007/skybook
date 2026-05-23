@@ -1,3 +1,4 @@
+import { createClient } from "@/utliz/supabaseClient";
 import { flightSeat } from "@/services/seatsupabase";
 import { useFlightStore } from "@/store/useFlightStore";
 import { Seat } from "@/types/seat";
@@ -28,6 +29,50 @@ function useSeat() {
     };
 
     loadseat();
+
+    // Realtime subscription
+
+    const supabase = createClient();
+
+    const channel = supabase
+      .channel("seats-realtime")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "seats",
+          filter: `flight_id=eq.${selectedFlight.id}`,
+        },
+        (payload) => {
+          setSeat(
+            seats.map((seat) =>
+              seat.id === payload.new.id
+                ? { ...seat, is_available: payload.new.is_available }
+                : seat,
+            ),
+          );
+
+          // deselect a  current seat if choosen by someone else
+          if (
+            selectedSeat?.id === payload.new.id &&
+            !payload.new.is_available
+          ) {
+          }
+          setSelectedSeat(null);
+          setError(
+            "Sorry! Seat " +
+              payload.new.seat_number +
+              " was just taken by someone else. Please select another seat.",
+          );
+        },
+      )
+      .subscribe();
+    // cleanup sub when component unmounts
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [selectedFlight]);
 
   const handleSeatSelection = (seat: Seat) => {
