@@ -44,7 +44,7 @@ function Header() {
         >
           Logout
         </button>
-        ;
+        
       </section>
     </nav>
   );
