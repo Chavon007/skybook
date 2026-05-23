@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { createClient } from "@/utliz/supabaseClient";
 import { SearchQuery } from "@/types/flight";
 
@@ -8,8 +8,8 @@ export const searchFlight = async (query: SearchQuery) => {
   const { data, error } = await supabase
     .from("flights")
     .select("*")
-    .eq("origin", query.origin)
-    .eq("destination", query.destination)
+    .ilike("origin", query.origin)
+    .ilike("destination", query.destination)
     .gte("departs_at", `${query.date}T00:00:00`)
     .lte("departs_at", `${query.date}T23:59:59`)
     .eq("status", "scheduled")
@@ -19,5 +19,3 @@ export const searchFlight = async (query: SearchQuery) => {
 
   return data;
 };
-
-

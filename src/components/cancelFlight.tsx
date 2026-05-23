@@ -15,7 +15,7 @@ function CancelPage() {
   const handleConfirmCancel = async () => {
     if (!id) return;
     await handleCancel(id as string);
-    router.push("/my-bookings");
+    router.push("/booking");
   };
 
   const formatDate = (iso: string) =>

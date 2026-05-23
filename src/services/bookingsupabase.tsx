@@ -16,10 +16,12 @@ export const createBooking = async ({
   flightId,
   passenger,
   seatId,
+  totalPrice,
 }: {
   flightId: string | undefined;
   seatId: string | undefined;
   passenger: Passenger;
+  totalPrice: number;
 }) => {
   const {
     data: { user },
@@ -35,9 +37,9 @@ export const createBooking = async ({
       p_seat_id: seatId,
       p_flight_id: flightId,
       p_user_id: user.id,
-      p_total_price: 0,
+      p_total_price: totalPrice,
       p_pnr_code: generatePNR(),
-    }
+    },
   );
 
   if (bookingError) throw bookingError;
@@ -72,14 +74,18 @@ export const fetchBooking = async (userId: string) => {
         arrives_at,
         aircraft_type,
         flight_no
+      ),
+      seats (
+        seat_number,
+        class,
+        extra_fee
       )
-    `
+    `,
     )
     .eq("user_id", userId)
     .order("booked_at", { ascending: false });
 
   if (error) throw error;
-
   return data;
 };
 
@@ -97,7 +103,7 @@ export const fetchBookingById = async (bookingId: string) => {
         aircraft_type,
         flight_no
       )
-    `
+    `,
     )
     .eq("id", bookingId)
     .single();
@@ -139,14 +145,12 @@ export const rescheduleBooking = async ({
   if (fetchError) throw fetchError;
 
   // insert into reschedules table
-  const { error: rescheduleError } = await supabase
-    .from("reschedules")
-    .insert({
-      booking_id: bookingId,
-      old_flight_id: currentBooking.flight_id,
-      new_flight_id: newFlightId,
-      fee_charged: feeCharged,
-    });
+  const { error: rescheduleError } = await supabase.from("reschedules").insert({
+    booking_id: bookingId,
+    old_flight_id: currentBooking.flight_id,
+    new_flight_id: newFlightId,
+    fee_charged: feeCharged,
+  });
 
   if (rescheduleError) throw rescheduleError;
 

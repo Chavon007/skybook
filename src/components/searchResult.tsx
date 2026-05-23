@@ -33,14 +33,8 @@ function FlightResult() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="flex items-center justify-between mb-8"
+          className=" mb-8"
         >
-          <div className="flex items-center gap-3">
-            <MdFlightTakeoff className="text-amber-100 text-2xl" />
-            <span className="text-amber-100 font-serif font-bold text-xl">
-              SkyBook
-            </span>
-          </div>
           <button
             onClick={() => router.back()}
             className="flex items-center gap-1 text-amber-100 border border-amber-100/30 rounded-lg px-3 py-1.5 text-sm font-mono hover:bg-amber-100/10 transition"

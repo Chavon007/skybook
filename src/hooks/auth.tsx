@@ -81,19 +81,16 @@ function useAuth() {
       setSession(data.session);
       setSuccess("Login successful");
       setTimeout(() => {
-        window.location.href = "/home";
+        window.location.href = "/flight";
       }, 2000);
-    } catch (err) {
-      setError("Can't login now");
+    } catch (err: any) {
+      setError(err.message || "Can't login now");
     } finally {
       setLoading(false);
     }
   };
 
-
-
-
-  return {login, signup, loading, error, success, setFormData, formData };
+  return { login, signup, loading, error, success, setFormData, formData };
 }
 
 export default useAuth;

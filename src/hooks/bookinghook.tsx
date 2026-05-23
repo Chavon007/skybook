@@ -38,6 +38,8 @@ function useBooking() {
   const [getBookings, setGetBookings] = useState<Bookings[]>([]);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
   const [reschedulingId, setReschedulingId] = useState<string | null>(null);
+  const totalPrice =
+    (selectedFlight?.base_price ?? 0) + (selectedSeat?.[0]?.extra_fee ?? 0);
 
   // create a booking
   const handleBooking = async (e: React.FormEvent) => {
@@ -59,10 +61,11 @@ function useBooking() {
     try {
       const data = await createBooking({
         flightId: selectedFlight?.id,
-        seatId: selectedSeat?.id,
+        seatId: selectedSeat?.[0]?.id,
         passenger: formData,
+        totalPrice,
       });
-      setPnrCode(data.booking.pnr_code);  // ← fixed
+      setPnrCode(data.booking.pnr_code);
       setPassengerDetails(data.passenger);
       router.push("/booking/confirmed");
     } catch (err: any) {
@@ -97,8 +100,8 @@ function useBooking() {
       await cancelBooking(bookingId);
       setGetBookings((prev) =>
         prev.map((b) =>
-          b.id === bookingId ? { ...b, status: "Cancelled" } : b
-        )
+          b.id === bookingId ? { ...b, status: "Cancelled" } : b,
+        ),
       );
     } catch (err: any) {
       setError(err.message || "Failed to cancel booking");
@@ -125,8 +128,8 @@ function useBooking() {
         prev.map((b) =>
           b.id === bookingId
             ? { ...b, status: "Rescheduled", flight_id: newFlightId }
-            : b
-        )
+            : b,
+        ),
       );
     } catch (err: any) {
       setError(err.message || "Failed to reschedule booking");

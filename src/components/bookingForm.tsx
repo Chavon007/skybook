@@ -1,4 +1,5 @@
 "use client";
+
 import useBooking from "@/hooks/bookinghook";
 import { useFlightStore } from "@/store/useFlightStore";
 import { MdFlightTakeoff } from "react-icons/md";
@@ -8,11 +9,15 @@ import { useRouter } from "next/navigation";
 
 function BookingDetails() {
   const { formData, setFormData, loading, error, handleBooking } = useBooking();
+
   const { selectedFlight, selectedSeat } = useFlightStore();
   const router = useRouter();
 
-  const totalPrice =
-    (selectedFlight?.base_price ?? 0) + (selectedSeat?.extra_fee ?? 0);
+  // ✅ FIX: selectedSeat is an array
+  const seat = selectedSeat?.[0];
+
+  // ✅ SAFE TOTAL PRICE
+  const totalPrice = (selectedFlight?.base_price ?? 0) + (seat?.extra_fee ?? 0);
 
   return (
     <div className=" min-h-screen">
@@ -22,14 +27,8 @@ function BookingDetails() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="flex items-center justify-between mb-8"
+          className=" mb-8"
         >
-          <div className="flex items-center gap-3">
-            <MdFlightTakeoff className="text-amber-100 text-2xl" />
-            <span className="text-amber-100 font-serif font-bold text-xl">
-              SkyBook
-            </span>
-          </div>
           <button
             onClick={() => router.back()}
             className="flex items-center gap-1 text-amber-100 border border-amber-100/30 rounded-lg px-3 py-1.5 text-sm font-mono hover:bg-amber-100/10 transition"
@@ -58,6 +57,7 @@ function BookingDetails() {
               >
                 {step}
               </div>
+
               {index < 3 && (
                 <span className="text-amber-100/20 text-xs">→</span>
               )}
@@ -89,10 +89,12 @@ function BookingDetails() {
                     type="text"
                     value={formData.full_name}
                     onChange={(e) =>
-                      setFormData({ ...formData, full_name: e.target.value })
+                      setFormData({
+                        ...formData,
+                        full_name: e.target.value,
+                      })
                     }
-                    placeholder="John Doe"
-                    className="p-2.5 rounded-lg bg-black/40 border border-amber-100/20 text-white outline-none font-mono text-sm focus:border-amber-100/50 transition"
+                    className="p-2.5 rounded-lg bg-black/40 border border-amber-100/20 text-white outline-none font-mono text-sm"
                   />
                 </label>
 
@@ -105,10 +107,12 @@ function BookingDetails() {
                     type="text"
                     value={formData.passport_no}
                     onChange={(e) =>
-                      setFormData({ ...formData, passport_no: e.target.value })
+                      setFormData({
+                        ...formData,
+                        passport_no: e.target.value,
+                      })
                     }
-                    placeholder="A00000000"
-                    className="p-2.5 rounded-lg bg-black/40 border border-amber-100/20 text-white outline-none font-mono text-sm focus:border-amber-100/50 transition"
+                    className="p-2.5 rounded-lg bg-black/40 border border-amber-100/20 text-white outline-none font-mono text-sm"
                   />
                 </label>
 
@@ -127,8 +131,7 @@ function BookingDetails() {
                           nationality: e.target.value,
                         })
                       }
-                      placeholder="Nigerian"
-                      className="p-2.5 rounded-lg bg-black/40 border border-amber-100/20 text-white outline-none font-mono text-sm focus:border-amber-100/50 transition"
+                      className="p-2.5 rounded-lg bg-black/40 border border-amber-100/20 text-white outline-none font-mono text-sm"
                     />
                   </label>
 
@@ -142,7 +145,7 @@ function BookingDetails() {
                       onChange={(e) =>
                         setFormData({ ...formData, dob: e.target.value })
                       }
-                      className="p-2.5 rounded-lg bg-black/40 border border-amber-100/20 text-white outline-none font-mono text-sm focus:border-amber-100/50 transition"
+                      className="p-2.5 rounded-lg bg-black/40 border border-amber-100/20 text-white outline-none font-mono text-sm"
                     />
                   </label>
                 </div>
@@ -154,7 +157,7 @@ function BookingDetails() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 rounded-xl bg-amber-100 text-black font-serif font-semibold hover:bg-amber-300 transition cursor-pointer mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-3 rounded-xl bg-amber-100 text-black font-serif font-semibold hover:bg-amber-300 transition cursor-pointer mt-2 disabled:opacity-50"
                 >
                   {loading ? "Booking..." : "Confirm Booking →"}
                 </button>
@@ -177,7 +180,6 @@ function BookingDetails() {
 
               {selectedFlight && (
                 <div className="flex flex-col gap-3">
-                  {/* ROUTE */}
                   <div className="flex items-center justify-center gap-3 py-3 border-b border-amber-100/10">
                     <div className="text-center">
                       <p className="text-xl font-bold font-serif text-amber-100">
@@ -187,9 +189,9 @@ function BookingDetails() {
                         Origin
                       </p>
                     </div>
-                    <div className="flex flex-col items-center text-amber-100/30">
-                      <MdFlightTakeoff className="text-lg" />
-                    </div>
+
+                    <MdFlightTakeoff className="text-lg text-amber-100/30" />
+
                     <div className="text-center">
                       <p className="text-xl font-bold font-serif text-amber-100">
                         {selectedFlight.destination}
@@ -200,7 +202,6 @@ function BookingDetails() {
                     </div>
                   </div>
 
-                  {/* DETAILS */}
                   <div className="flex flex-col gap-2">
                     <div className="flex justify-between">
                       <span className="text-xs text-amber-100/50 font-mono">
@@ -210,6 +211,7 @@ function BookingDetails() {
                         {selectedFlight.flight_no}
                       </span>
                     </div>
+
                     <div className="flex justify-between">
                       <span className="text-xs text-amber-100/50 font-mono">
                         Aircraft
@@ -218,27 +220,31 @@ function BookingDetails() {
                         {selectedFlight.aircraft_type}
                       </span>
                     </div>
+
                     <div className="flex justify-between">
                       <span className="text-xs text-amber-100/50 font-mono">
                         Departure
                       </span>
                       <span className="text-xs text-amber-100 font-mono">
-                        {new Date(selectedFlight.departs_at).toLocaleString(
-                          "en-NG",
-                          {
-                            dateStyle: "medium",
-                            timeStyle: "short",
-                          },
-                        )}
+                        {selectedFlight?.departs_at
+                          ? new Date(selectedFlight.departs_at).toLocaleString(
+                              "en-NG",
+                              {
+                                dateStyle: "medium",
+                                timeStyle: "short",
+                              },
+                            )
+                          : "N/A"}
                       </span>
                     </div>
-                    {selectedSeat && (
+
+                    {seat && (
                       <div className="flex justify-between">
                         <span className="text-xs text-amber-100/50 font-mono">
                           Seat
                         </span>
                         <span className="text-xs text-amber-100 font-mono capitalize">
-                          {selectedSeat.seat_number} · {selectedSeat.class}
+                          {seat.seat_number} · {seat.class}
                         </span>
                       </div>
                     )}
@@ -252,23 +258,26 @@ function BookingDetails() {
               <h3 className="text-sm font-serif font-bold text-amber-100 mb-4">
                 Price Breakdown
               </h3>
+
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between">
                   <span className="text-xs text-amber-100/50 font-mono">
                     Base fare
                   </span>
                   <span className="text-xs text-amber-100 font-mono">
-                    ₦{selectedFlight?.base_price.toLocaleString()}
+                    ₦{selectedFlight?.base_price?.toLocaleString() ?? "0"}
                   </span>
                 </div>
+
                 <div className="flex justify-between">
                   <span className="text-xs text-amber-100/50 font-mono">
                     Seat upgrade
                   </span>
                   <span className="text-xs text-amber-100 font-mono">
-                    +₦{selectedSeat?.extra_fee.toLocaleString()}
+                    +₦{seat?.extra_fee?.toLocaleString() ?? "0"}
                   </span>
                 </div>
+
                 <div className="border-t border-amber-100/10 pt-2 mt-1 flex justify-between">
                   <span className="text-sm text-amber-100/70 font-mono font-semibold">
                     Total
