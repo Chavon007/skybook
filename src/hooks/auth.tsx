@@ -3,9 +3,14 @@ import { useState } from "react";
 import { authProp } from "@/types/auth";
 import { signupSupabase, loginSupabse } from "@/services/authsupabse";
 import { useUserStore } from "../store/useUserStore";
-
+import { createClient } from "@/utliz/supabaseClient";
+import { useFlightStore } from "@/store/useFlightStore";
+import { useRouter } from "next/navigation";
 function useAuth() {
   const [loading, setLoading] = useState(false);
+  const { resetStore } = useFlightStore();
+
+  const router = useRouter();
   const [formData, setFormData] = useState<authProp>({
     fullName: "",
     password: "",
@@ -15,7 +20,7 @@ function useAuth() {
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { setSession } = useUserStore();
+  const { setSession, clearUser } = useUserStore();
 
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -90,7 +95,23 @@ function useAuth() {
     }
   };
 
-  return { login, signup, loading, error, success, setFormData, formData };
+  const logout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    clearUser();
+    resetStore();
+    router.push("/login");
+  };
+  return {
+    login,
+    signup,
+    logout,
+    loading,
+    error,
+    success,
+    setFormData,
+    formData,
+  };
 }
 
 export default useAuth;

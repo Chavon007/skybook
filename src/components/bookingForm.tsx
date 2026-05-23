@@ -13,10 +13,10 @@ function BookingDetails() {
   const { selectedFlight, selectedSeat } = useFlightStore();
   const router = useRouter();
 
-  // ✅ FIX: selectedSeat is an array
+  // selectedSeat is an array
   const seat = selectedSeat?.[0];
 
-  // ✅ SAFE TOTAL PRICE
+  //  SAFE TOTAL PRICE
   const totalPrice = (selectedFlight?.base_price ?? 0) + (seat?.extra_fee ?? 0);
 
   return (
@@ -87,6 +87,7 @@ function BookingDetails() {
                   </span>
                   <input
                     type="text"
+                    pattern="^[A-Za-z\s'-]+$"
                     value={formData.full_name}
                     onChange={(e) =>
                       setFormData({

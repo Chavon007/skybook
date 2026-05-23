@@ -35,6 +35,11 @@ function useSearch() {
       setLoading(false);
       return;
     }
+    if (searchQuery.passengers < 1) {
+      setError("Paasenger can't be less than 1");
+      setLoading(false);
+      return;
+    }
 
     try {
       const flights = await searchFlight(searchQuery);
