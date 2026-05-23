@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useUserStore } from "@/store/useUserStore";
 import { useEffect, useState } from "react";
 
+
 const noHeaderRoutes = ["/", "/login", "/signup"];
 const protectedRoutes = ["/flight", "/booking", "/result"];
 
@@ -42,6 +43,7 @@ export default function ClientLayout({
       <div className="absolute inset-0 bg-black/60" />
       <div className="relative z-10">
         <Header />
+
         {children}
       </div>
     </div>

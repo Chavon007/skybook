@@ -40,6 +40,7 @@ function Search() {
               <label className="flex flex-col gap-1 text-amber-100 text-sm font-serif">
                 <p>From</p>
                 <input
+                type="text"
                   value={searchQuery.origin}
                   onChange={(e) =>
                     setSearchQuery({ ...searchQuery, origin: e.target.value })
@@ -52,6 +53,7 @@ function Search() {
               <label className="flex flex-col gap-1 text-amber-100 text-sm font-serif">
                 <p>To</p>
                 <input
+                type="text"
                   value={searchQuery.destination}
                   onChange={(e) =>
                     setSearchQuery({
