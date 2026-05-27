@@ -15,9 +15,14 @@ function BookingDetails() {
 
   // selectedSeat is an array
   const seat = selectedSeat?.[0];
+  const totalSeatFees = selectedSeat.reduce(
+    (acc, seat) => acc + seat.extra_fee,
+    0,
+  );
 
   //  SAFE TOTAL PRICE
-  const totalPrice = (selectedFlight?.base_price ?? 0) + (seat?.extra_fee ?? 0);
+  const totalPrice =
+    (selectedFlight?.base_price ?? 0) + (selectedSeat.length + totalSeatFees);
 
   return (
     <div className=" min-h-screen">
@@ -245,7 +250,15 @@ function BookingDetails() {
                           Seat
                         </span>
                         <span className="text-xs text-amber-100 font-mono capitalize">
-                          {seat.seat_number} · {seat.class}
+                          {selectedSeat.length > 0 && (
+                            <div className="">
+                              <span className="text-xs text-amber-100 font-mono capitalize">
+                                {selectedSeat
+                                  .map((s) => `${s.seat_number} · ${s.class}`)
+                                  .join(", ")}
+                              </span>
+                            </div>
+                          )}
                         </span>
                       </div>
                     )}
@@ -275,7 +288,7 @@ function BookingDetails() {
                     Seat upgrade
                   </span>
                   <span className="text-xs text-amber-100 font-mono">
-                    +₦{seat?.extra_fee?.toLocaleString() ?? "0"}
+                    +₦{totalSeatFees.toLocaleString()}
                   </span>
                 </div>
 

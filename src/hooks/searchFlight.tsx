@@ -24,7 +24,7 @@ function useSearch() {
     setLoading(true);
     setError("");
 
-    if (!searchQuery.destination || !searchQuery.origin || !searchQuery.date) {
+    if (!searchQuery.destination || !searchQuery.origin ) {
       setError("Please fill all search fields");
       setLoading(false);
       return;
