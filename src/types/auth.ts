@@ -4,4 +4,5 @@ export interface authProp {
   fullName?: string;
   confirmpassword?: string;
   terms?: boolean;
+  newPassword?: string;
 }

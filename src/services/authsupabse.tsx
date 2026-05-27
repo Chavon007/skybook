@@ -38,3 +38,19 @@ export const loginWithGoogle = async () => {
   });
   if (error) throw error;
 };
+
+export const resetPasswordLink = async (email: string) => {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/reset-password`,
+  });
+
+  if (error) throw error;
+};
+
+export const resetPassword = async (newPassword: string) => {
+  const { error } = await supabase.auth.updateUser({
+    password: newPassword,
+  });
+
+  if (error) throw error;
+};

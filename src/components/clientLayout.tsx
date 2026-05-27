@@ -4,8 +4,13 @@ import { usePathname, useRouter } from "next/navigation";
 import { useUserStore } from "@/store/useUserStore";
 import { useEffect, useState } from "react";
 
-
-const noHeaderRoutes = ["/", "/login", "/signup"];
+const noHeaderRoutes = [
+  "/",
+  "/login",
+  "/signup",
+  "/forget-password",
+  "/reset-password",
+];
 const protectedRoutes = ["/flight", "/booking", "/result"];
 
 export default function ClientLayout({

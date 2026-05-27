@@ -1,7 +1,12 @@
 "use client";
 import { useState } from "react";
 import { authProp } from "@/types/auth";
-import { signupSupabase, loginSupabse } from "@/services/authsupabse";
+import {
+  signupSupabase,
+  loginSupabse,
+  resetPassword,
+  resetPasswordLink,
+} from "@/services/authsupabse";
 import { useUserStore } from "../store/useUserStore";
 import { createClient } from "@/utliz/supabaseClient";
 import { useFlightStore } from "@/store/useFlightStore";
@@ -17,6 +22,7 @@ function useAuth() {
     confirmpassword: "",
     email: "",
     terms: false,
+    newPassword: "",
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -102,6 +108,60 @@ function useAuth() {
     resetStore();
     router.push("/login");
   };
+
+  const passwordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
+    if (!formData.email) {
+      setError("Please fill required fields ");
+      setLoading(false);
+      return;
+    }
+    if (!emailRegex.test(formData.email)) {
+      setError("please use a valid email address");
+      setLoading(false);
+      return;
+    }
+    try {
+      await resetPasswordLink(formData.email);
+      setSuccess("Password reset link sent! Check your email.");
+    } catch (err: any) {
+      setError(err.message || "Failed to send reset link");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const newPasswordLink = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
+    if (!formData.newPassword || !formData.confirmpassword) {
+      setError("Please fill all required fields");
+      setLoading(false);
+      return;
+    }
+    if (formData.newPassword !== formData.confirmpassword) {
+      setError("New password and confirm password does not match");
+      setLoading(false);
+      return;
+    }
+    try {
+      await resetPassword(formData.newPassword);
+      setSuccess("Password reset successful!");
+      router.push("/login");
+    } catch (err: any) {
+      setError(err.message || "Failed to reset password");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     login,
     signup,
@@ -111,6 +171,8 @@ function useAuth() {
     success,
     setFormData,
     formData,
+    passwordReset,
+    newPasswordLink,
   };
 }
 
