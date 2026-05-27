@@ -1,6 +1,7 @@
 "use client";
 import { CiSearch } from "react-icons/ci";
 import useSearch from "@/hooks/searchFlight";
+import useProtectedRoute from "@/hooks/useProtectedRoute";
 
 const popular = [
   {
@@ -14,8 +15,16 @@ const popular = [
 ];
 
 function Search() {
-  const { handleSearchFlight, loading, error, setSearchQuery, searchQuery } =
-    useSearch();
+  const {
+    handleSearchFlight,
+    loading: searchLoading,
+    error,
+    setSearchQuery,
+    searchQuery,
+  } = useSearch();
+
+  const { loading } = useProtectedRoute();
+  if (loading) return null;
 
   return (
     <div className=" min-h-screen flex items-center justify-center p-4 ">
@@ -40,7 +49,7 @@ function Search() {
               <label className="flex flex-col gap-1 text-amber-100 text-sm font-serif">
                 <p>From</p>
                 <input
-                type="text"
+                  type="text"
                   value={searchQuery.origin}
                   onChange={(e) =>
                     setSearchQuery({ ...searchQuery, origin: e.target.value })
@@ -53,7 +62,7 @@ function Search() {
               <label className="flex flex-col gap-1 text-amber-100 text-sm font-serif">
                 <p>To</p>
                 <input
-                type="text"
+                  type="text"
                   value={searchQuery.destination}
                   onChange={(e) =>
                     setSearchQuery({
@@ -120,11 +129,11 @@ function Search() {
           {/* BUTTON */}
           <button
             type="submit"
-            disabled={loading}
+            disabled={searchLoading}
             className="flex cursor-pointer items-center justify-center gap-2 p-2 rounded-md bg-amber-100 text-black font-semibold font-serif hover:bg-amber-300 transition"
           >
             <CiSearch />
-            {loading ? "Searching..." : "Search Flights"}
+            {searchLoading ? "Searching..." : "Search Flights"}
           </button>
 
           {error && <p className="text-red-400 text-sm text-center">{error}</p>}

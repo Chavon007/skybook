@@ -1,7 +1,5 @@
-
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
 
 type Session = {
   access_token: string;
@@ -16,6 +14,7 @@ type Session = {
 
 type UserStore = {
   session: Session | null;
+  loading: boolean;
   setSession: (session: Session | null) => void;
   clearUser: () => void;
 };
@@ -24,11 +23,13 @@ export const useUserStore = create<UserStore>()(
   persist(
     (set) => ({
       session: null,
-      setSession: (session) => set({ session }),
+      loading: true,
+      setSession: (session) => set({ session, loading: false }),
 
       clearUser: () =>
         set({
           session: null,
+          loading: false,
         }),
     }),
     {

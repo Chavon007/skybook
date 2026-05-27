@@ -1,6 +1,5 @@
 "use client";
 
-import { FaUser } from "react-icons/fa";
 import { MdFlightTakeoff } from "react-icons/md";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -26,7 +25,7 @@ function Header() {
               : "text-amber-100"
           }`}
         >
-          Search
+          Home
         </Link>
         <Link
           href="/booking"
@@ -44,7 +43,6 @@ function Header() {
         >
           Logout
         </button>
-        
       </section>
     </nav>
   );

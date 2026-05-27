@@ -4,16 +4,16 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 function useProtectedRoute() {
-  const { session } = useUserStore();
+  const { session, loading } = useUserStore();
   const router = useRouter();
 
   useEffect(() => {
-    if (!session) {
+    if (!loading && !session) {
       router.push("/login");
     }
-  }, [session, router]);
+  }, [session, loading,  router]);
 
-  return { session };
+  return { session, loading };
 }
 
 export default useProtectedRoute;
